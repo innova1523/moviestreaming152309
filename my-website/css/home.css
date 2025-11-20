@@ -1,60 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MyFlix – Movies & TV</title>
+* {
+margin-bottom: 20px;
+}
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+.hero p {
+font-size: 18px;
+margin-bottom: 20px;
+}
 
-<header class="nf-header">
-  <div class="nf-brand">MyFlix</div>
 
-  <nav class="nf-nav">
-    <a class="active">Home</a>
-    <a>TV Shows</a>
-    <a>Movies</a>
-    <a>New & Popular</a>
-  </nav>
+.btn {
+padding: 10px 22px;
+border: none;
+border-radius: 4px;
+font-size: 16px;
+cursor: pointer;
+margin-right: 10px;
+display: inline-flex;
+align-items: center;
+gap: 8px;
+}
 
-  <div class="nf-actions">
-    <input class="nf-search" id="searchInput" placeholder="Search..." />
-    <div class="nf-profile">J</div>
-  </div>
-</header>
 
-<!-- HERO -->
-<section class="nf-hero" id="heroSection">
-  <div class="nf-hero-inner">
-    <h1 class="nf-hero-title" id="heroTitle">Featured Title</h1>
-    <p class="nf-hero-desc" id="heroDesc"></p>
-    <div class="nf-hero-ctas">
-      <button class="btn play" id="heroPlayBtn">► Play</button>
-      <button class="btn more" id="heroMoreBtn">More info</button>
-    </div>
-  </div>
-</section>
+.btn-play {
+background-color: #fff;
+color: #000;
+}
 
-<!-- ROWS -->
-<div id="rows"></div>
 
-<!-- MODAL -->
-<div class="nf-modal" id="modal">
-  <div class="nf-modal-card">
-    <h2 id="modalTitle"></h2>
-    <p id="modalDesc"></p>
-    <div id="modalTrailer"></div>
+.btn-info {
+background-color: rgba(255,255,255,0.3);
+color: #fff;
+}
 
-    <button class="btn more" style="margin-top: 12px;" onclick="closeModal()">Close</button>
-  </div>
-</div>
 
-<script src="script.js"></script>
-</body>
-</html>
+/* Movie Rows */
+.row {
+margin-top: 40px;
+padding: 0 30px;
+}
+
+
+.row h2 {
+margin-bottom: 10px;
+font-size: 22px;
+}
+
+
+.movie-row {
+display: flex;
+overflow-x: auto;
+gap: 10px;
+scroll-behavior: smooth;
+}
+
+
+.movie-row::-webkit-scrollbar {
+height: 8px;
+}
+
+
+.movie-row::-webkit-scrollbar-thumb {
+background: #333;
+border-radius: 10px;
+}
+
+
+.movie {
+min-width: 180px;
+height: 260px;
+background-size: cover;
+background-position: center;
+border-radius: 4px;
+transition: transform 0.2s;
+}
+
+
+.movie:hover {
+transform: scale(1.08);
+}
+
+
+/* Footer */
+footer {
+text-align: center;
+padding: 40px;
+color: #777;
+font-size: 14px;
+margin-top: 40px;
+}
