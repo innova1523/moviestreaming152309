@@ -1,166 +1,60 @@
-:root{
-  --bg: #050506;
-  --surface: #0f1114;
-  --muted: #9aa0a6;
-  --accent: #e50914; /* Netflix-red style accent */
-  --card-shadow: 0 6px 20px rgba(0,0,0,0.6);
-  --glass: rgba(255,255,255,0.03);
-  --radius: 8px;
-  --gap: 14px;
-  --max-width: 1200px;
-  --text: #e6eef6;
-  --gradient-hero: linear-gradient(180deg, rgba(11,11,12,0.0) 0%, rgba(11,11,12,0.9) 50%, rgba(11,11,12,1) 100%);
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MyFlix – Movies & TV</title>
 
-/* ========== RESET & BASE ========== */
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: radial-gradient(1200px 600px at 10% 10%, rgba(255,255,255,0.02), transparent),
-              var(--bg);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  line-height:1.35;
-  -webkit-tap-highlight-color: transparent;
-}
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-/* Small utilities */
-.container{max-width:var(--max-width);margin:0 auto;padding:0 18px}
-.row{display:flex;align-items:center;gap:12px}
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
 
-/* ========== HEADER ========== */
-.nf-header{
-  position:sticky;top:0;z-index:60;
-  display:flex;align-items:center;gap:18px;padding:12px 18px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.25));
-  backdrop-filter: blur(6px);
-  border-bottom:1px solid rgba(255,255,255,0.02);
-}
+<header class="nf-header">
+  <div class="nf-brand">MyFlix</div>
 
-/* brand + nav */
-.nf-brand{
-  font-weight:700;color:var(--text);font-size:20px;
-  background:linear-gradient(90deg,#ff6b6b,var(--accent));
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  padding-right:6px;
-}
+  <nav class="nf-nav">
+    <a class="active">Home</a>
+    <a>TV Shows</a>
+    <a>Movies</a>
+    <a>New & Popular</a>
+  </nav>
 
-.nf-nav{display:flex;gap:12px;margin-left:8px}
-.nf-nav a{
-  color:var(--muted);text-decoration:none;padding:8px 6px;border-radius:6px;font-weight:500;font-size:14px;
-}
-.nf-nav a.active, .nf-nav a:hover{color:var(--text);background:rgba(255,255,255,0.02)}
+  <div class="nf-actions">
+    <input class="nf-search" id="searchInput" placeholder="Search..." />
+    <div class="nf-profile">J</div>
+  </div>
+</header>
 
-/* right side actions */
-.nf-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
-.nf-search{
-  background:var(--glass);border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:8px;
-  color:var(--text);outline:none;width:200px;font-size:14px
-}
-.nf-search::placeholder{color:var(--muted)}
-.nf-profile{
-  width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#242426,#18181a);
-  border:1px solid rgba(255,255,255,0.03);font-weight:700;color:var(--text)
-}
+<!-- HERO -->
+<section class="nf-hero" id="heroSection">
+  <div class="nf-hero-inner">
+    <h1 class="nf-hero-title" id="heroTitle">Featured Title</h1>
+    <p class="nf-hero-desc" id="heroDesc"></p>
+    <div class="nf-hero-ctas">
+      <button class="btn play" id="heroPlayBtn">► Play</button>
+      <button class="btn more" id="heroMoreBtn">More info</button>
+    </div>
+  </div>
+</section>
 
-/* ========== HERO ========== */
-.nf-hero{
-  position:relative;display:flex;align-items:flex-end;padding:48px 0 80px;
-  min-height:420px;background-size:cover;background-position:center;
-  color:var(--text);overflow:hidden;
-}
-.nf-hero::before{
-  content:"";position:absolute;inset:0;background:var(--gradient-hero);pointer-events:none;
-}
-.nf-hero-inner{position:relative;z-index:2;max-width:1100px;padding:40px 18px 20px;margin-left:18px}
-.nf-hero-title{font-size:44px;margin:0 0 10px;font-weight:800;letter-spacing:-0.02em}
-.nf-hero-desc{color:var(--muted);max-width:70ch;margin:0 0 18px}
-.nf-hero-ctas{display:flex;gap:10px;align-items:center}
-.btn{
-  display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:8px;border:0;font-weight:700;cursor:pointer;font-size:15px
-}
-.btn.play{background:var(--text);color:#000;padding:12px 18px;border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,0.5)}
-.btn.more{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.04)}
+<!-- ROWS -->
+<div id="rows"></div>
 
-/* subtle hero fade for small screens */
-@media (max-width:720px){
-  .nf-hero{min-height:280px;padding:28px 0 60px}
-  .nf-hero-title{font-size:26px}
-  .nf-hero-desc{display:none}
-  .nf-search{width:120px}
-}
+<!-- MODAL -->
+<div class="nf-modal" id="modal">
+  <div class="nf-modal-card">
+    <h2 id="modalTitle"></h2>
+    <p id="modalDesc"></p>
+    <div id="modalTrailer"></div>
 
-/* ========== ROW (carousel-like) ========== */
-.nf-row{padding:22px 18px}
-.nf-row-title{margin:0 0 10px;font-size:18px;font-weight:700;padding-left:6px;color:var(--text)}
-.nf-row-cards{
-  display:flex;gap:var(--gap);overflow-x:auto;padding-bottom:8px;padding-left:6px;
-  scroll-snap-type:x mandatory;scroll-padding:12px;
-}
-.nf-row-cards::-webkit-scrollbar{height:10px}
-.nf-row-cards::-webkit-scrollbar-track{background:transparent}
-.nf-row-cards::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.06);border-radius:6px}
+    <button class="btn more" style="margin-top: 12px;" onclick="closeModal()">Close</button>
+  </div>
+</div>
 
-/* CARD */
-.nf-card{
-  min-width:160px;max-width:200px;flex:0 0 160px;border-radius:10px;overflow:hidden;position:relative;
-  background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);box-shadow:var(--card-shadow);
-  transition:transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s;
-  scroll-snap-align:center;
-}
-.nf-card:hover{transform:translateY(-8px) scale(1.035);box-shadow:0 18px 40px rgba(0,0,0,0.6);cursor:pointer}
-.nf-poster{display:block;width:100%;height:240px;object-fit:cover;vertical-align:middle;background:#111}
-.nf-card-badge{
-  position:absolute;left:8px;top:8px;background:rgba(0,0,0,0.6);padding:6px 8px;border-radius:6px;font-size:12px;color:var(--text)
-}
-.nf-card-meta{padding:10px}
-.nf-card-meta h3{margin:0;font-size:14px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nf-card-meta p{margin:6px 0 0;color:var(--muted);font-size:13px}
-
-/* hover reveal overlay with play button */
-.nf-card::after{
-  content:"";position:absolute;inset:auto 0 0 0;height:60%;background:linear-gradient(180deg, rgba(0,0,0,0.0), rgba(0,0,0,0.65));
-  opacity:0;transition:opacity .22s;
-}
-.nf-card:hover::after{opacity:1}
-
-/* small play circle in center on hover */
-.nf-card .play-circle{
-  position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);display:none;
-  width:56px;height:56px;border-radius:50%;background:rgba(0,0,0,0.45);display:grid;place-items:center;
-  border:2px solid rgba(255,255,255,0.06)
-}
-.nf-card:hover .play-circle{display:grid}
-.play-circle svg{width:22px;height:22px;fill:var(--text)}
-
-/* ========== RESPONSIVE GRID FOR LARGER CARDS ========== */
-@media (min-width:1000px){
-  .nf-row-cards .nf-card{min-width:200px;flex:0 0 200px}
-  .nf-poster{height:300px}
-}
-
-/* ========== MODAL (basic) ========== */
-.nf-modal{
-  position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.7);z-index:90;
-}
-.nf-modal.open{display:flex}
-.nf-modal-card{
-  width:min(1100px,96%);background:linear-gradient(180deg,#0f1114,#0b0b0d);border-radius:12px;padding:18px;border:1px solid rgba(255,255,255,0.04);
-  color:var(--text);box-shadow:0 30px 80px rgba(0,0,0,0.8)
-}
-
-/* ========== FOOTER ========== */
-.nf-footer{padding:36px 18px;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid rgba(255,255,255,0.02)}
-
-/* ========== ACCESSIBILITY & PERFORMANCE ========== */
-@media (prefers-reduced-motion: reduce){
-  .nf-card, .nf-card:hover, .nf-row-cards{transition:none;animation:none;scroll-behavior:auto}
-}
-
-/* ========== SMALL HELPERS ========== */
-.hidden{display:none !important}
-.center{text-align:center}
-.muted{color:var(--muted)}
+<script src="script.js"></script>
+</body>
+</html>
