@@ -1,89 +1,123 @@
 const API_KEY = 'a1e72fd93ed59f56e6332813b9f8dcae';
-   const IMG_URL = 'https://image.tmdb.org/t/p/w500';
-    const BG_URL = 'https://image.tmdb.org/t/p/original';
+   const BASE_URL = 'https://api.themoviedb.org/3';
+    const IMG_URL = 'https://image.tmdb.org/t/p/original';
+    let currentItem;
 
-document.addEventListener("DOMContentLoaded", () => {
-
-    const rowsContainer = document.getElementById('rows');
-    const hero = document.getElementById('hero');
-    const heroTitle = document.getElementById('heroTitle');
-    const heroDesc = document.getElementById('heroDesc');
-    const searchInput = document.getElementById('searchInput');
-
-    const categories = [
-        { title: 'Trending Now', endpoint: 'trending/movie/week' },
-        { title: 'Top Rated', endpoint: 'movie/top_rated' },
-        { title: 'Action', endpoint: 'discover/movie?with_genres=28' },
-        { title: 'Comedy', endpoint: 'discover/movie?with_genres=35' },
-        { title: 'Horror', endpoint: 'discover/movie?with_genres=27' }
-    ];
-
-    async function fetchTMDB(url) {
-        const res = await fetch(`https://api.themoviedb.org/3/${url}&api_key=${TMDB_KEY}`);
-        if(!res.ok) throw new Error('Failed to fetch TMDB API');
-        return res.json();
+    async function fetchTrending(type) {
+      const res = await fetch(`${BASE_URL}/trending/${type}/week?api_key=${API_KEY}`);
+      const data = await res.json();
+      return data.results;
     }
 
-    async function loadHero() {
-        try {
-            const data = await fetchTMDB('movie/popular?language=en-US&page=1');
-            const movie = data.results[Math.floor(Math.random() * data.results.length)];
-            hero.style.backgroundImage = `url('${BG_URL + movie.backdrop_path}')`;
-            heroTitle.textContent = movie.title;
-            heroDesc.textContent = movie.overview.substring(0, 180) + '...';
-        } catch (err) {
-            console.error('Hero load error:', err);
-        }
+    async function fetchTrendingAnime() {
+  let allResults = [];
+
+  // Fetch from multiple pages to get more anime (max 3 pages for demo)
+  for (let page = 1; page <= 3; page++) {
+    const res = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&page=${page}`);
+    const data = await res.json();
+    const filtered = data.results.filter(item =>
+      item.original_language === 'ja' && item.genre_ids.includes(16)
+    );
+    allResults = allResults.concat(filtered);
+  }
+
+  return allResults;
+}
+
+
+    function displayBanner(item) {
+      document.getElementById('banner').style.backgroundImage = `url(${IMG_URL}${item.backdrop_path})`;
+      document.getElementById('banner-title').textContent = item.title || item.name;
     }
 
-    async function loadRows() {
-        rowsContainer.innerHTML = '';
-        for (let cat of categories) {
-            try {
-                const data = await fetchTMDB(cat.endpoint + '&language=en-US&page=1');
-                const rowHtml = `
-                    <div class="row">
-                        <h2>${cat.title}</h2>
-                        <div class="movie-row">
-                            ${data.results.map(m => `
-                                <div class="movie" 
-                                     style="background-image:url(${IMG_URL + m.poster_path})" 
-                                     title="${m.title}"
-                                     onclick="alert('${m.title}')">
-                                </div>`).join('')}
-                        </div>
-                    </div>`;
-                rowsContainer.innerHTML += rowHtml;
-            } catch (err) {
-                console.error(`Error loading category ${cat.title}:`, err);
-            }
-        }
+    function displayList(items, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      items.forEach(item => {
+        const img = document.createElement('img');
+        img.src = `${IMG_URL}${item.poster_path}`;
+        img.alt = item.title || item.name;
+        img.onclick = () => showDetails(item);
+        container.appendChild(img);
+      });
     }
 
-    searchInput.addEventListener('keypress', async (e) => {
-        if (e.key === 'Enter') {
-            const q = searchInput.value.trim();
-            if (!q) return;
-            try {
-                const data = await fetchTMDB(`search/movie?query=${encodeURIComponent(q)}&language=en-US&page=1`);
-                rowsContainer.innerHTML = `
-                    <div class="row">
-                        <h2>Search Results</h2>
-                        <div class="movie-row">
-                            ${data.results.map(m => `
-                                <div class="movie" 
-                                     style="background-image:url(${IMG_URL + m.poster_path})" 
-                                     title="${m.title}"
-                                     onclick="alert('${m.title}')">
-                                </div>`).join('')}
-                        </div>
-                    </div>`;
-            } catch (err) {
-                console.error('Search error:', err);
-            }
-        }
-    });
+    function showDetails(item) {
+      currentItem = item;
+      document.getElementById('modal-title').textContent = item.title || item.name;
+      document.getElementById('modal-description').textContent = item.overview;
+      document.getElementById('modal-image').src = `${IMG_URL}${item.poster_path}`;
+      document.getElementById('modal-rating').innerHTML = '★'.repeat(Math.round(item.vote_average / 2));
+      changeServer();
+      document.getElementById('modal').style.display = 'flex';
+    }
 
-    loadHero();
-    loadRows();
-});
+    function changeServer() {
+      const server = document.getElementById('server').value;
+      const type = currentItem.media_type === "movie" ? "movie" : "tv";
+      let embedURL = "";
+
+      if (server === "vidsrc.cc") {
+        embedURL = `https://vidsrc.cc/v2/embed/${type}/${currentItem.id}`;
+      } else if (server === "vidsrc.me") {
+        embedURL = `https://vidsrc.net/embed/${type}/?tmdb=${currentItem.id}`;
+      } else if (server === "player.videasy.net") {
+        embedURL = `https://player.videasy.net/${type}/${currentItem.id}`;
+      }
+
+      document.getElementById('modal-video').src = embedURL;
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+      document.getElementById('modal-video').src = '';
+    }
+
+    function openSearchModal() {
+      document.getElementById('search-modal').style.display = 'flex';
+      document.getElementById('search-input').focus();
+    }
+
+    function closeSearchModal() {
+      document.getElementById('search-modal').style.display = 'none';
+      document.getElementById('search-results').innerHTML = '';
+    }
+
+    async function searchTMDB() {
+      const query = document.getElementById('search-input').value;
+      if (!query.trim()) {
+        document.getElementById('search-results').innerHTML = '';
+        return;
+      }
+
+      const res = await fetch(`${BASE_URL}/search/multi?api_key=${API_KEY}&query=${query}`);
+      const data = await res.json();
+
+      const container = document.getElementById('search-results');
+      container.innerHTML = '';
+      data.results.forEach(item => {
+        if (!item.poster_path) return;
+        const img = document.createElement('img');
+        img.src = `${IMG_URL}${item.poster_path}`;
+        img.alt = item.title || item.name;
+        img.onclick = () => {
+          closeSearchModal();
+          showDetails(item);
+        };
+        container.appendChild(img);
+      });
+    }
+
+    async function init() {
+      const movies = await fetchTrending('movie');
+      const tvShows = await fetchTrending('tv');
+      const anime = await fetchTrendingAnime();
+
+      displayBanner(movies[Math.floor(Math.random() * movies.length)]);
+      displayList(movies, 'movies-list');
+      displayList(tvShows, 'tvshows-list');
+      displayList(anime, 'anime-list');
+    }
+
+    init();
